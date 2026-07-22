@@ -249,169 +249,6 @@
     }
 
     /* ============================================================
-       INVITATION CARD (after video)
-       ============================================================ */
-    #invitation-stage {
-      position: fixed;
-      inset: 0;
-      z-index: 8000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(8, 7, 6, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      opacity: 0;
-      pointer-events: none;
-      padding: 1rem;
-    }
-
-    .invitation-card {
-      position: relative;
-      width: min(90vw, 640px);
-      padding: clamp(2.4rem, 6vw, 4.5rem) clamp(1.6rem, 5vw, 3.2rem);
-      background: linear-gradient(160deg, rgba(255, 255, 255, .5), rgba(0, 0, 0, .02) 50%), var(--paper);
-      border-radius: 4px;
-      box-shadow: 0 60px 120px -30px rgba(0, 0, 0, .6);
-      text-align: center;
-      transform-style: preserve-3d;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .invitation-card::before {
-      content: "";
-      position: absolute;
-      inset: 14px;
-      border: 1px solid var(--gold);
-      opacity: .5;
-      pointer-events: none;
-    }
-
-    .invitation-card::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background:
-        linear-gradient(to bottom, transparent, var(--gold-dim) 20%, var(--gold-dim) 80%, transparent) 33.33% 0/1px 100% no-repeat,
-        linear-gradient(to bottom, transparent, var(--gold-dim) 20%, var(--gold-dim) 80%, transparent) 66.66% 0/1px 100% no-repeat;
-      opacity: .5;
-      pointer-events: none;
-    }
-
-    .inv-line {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-
-    .inv-honorific {
-      font-family: var(--serif-ar-body);
-      font-size: clamp(.95rem, 2vw, 1.15rem);
-      color: var(--ink-soft);
-      line-height: 2.1;
-    }
-
-    .inv-divider {
-      width: 56px;
-      height: 1px;
-      background: var(--gold);
-      margin: 1.4rem auto;
-      position: relative;
-    }
-
-    .inv-divider::before {
-      content: "❦";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: var(--paper);
-      padding: 0 .6rem;
-      color: var(--gold);
-      font-size: .9rem;
-    }
-
-    .inv-names {
-      font-family: var(--serif-ar-display);
-      font-size: clamp(1.8rem, 5vw, 3rem);
-      color: var(--ink);
-      line-height: 1.5;
-      margin: .6rem 0;
-    }
-
-    .inv-names .en {
-      display: block;
-      font-family: var(--serif-en-script);
-      font-style: italic;
-      font-size: clamp(1rem, 2.4vw, 1.3rem);
-      color: var(--gold);
-      letter-spacing: .06em;
-      margin-top: .4rem;
-      direction: ltr;
-    }
-
-    .inv-meta {
-      margin-top: 1.6rem;
-      font-family: var(--sans-util);
-      font-size: .78rem;
-      letter-spacing: .14em;
-      color: var(--ink-soft);
-      text-transform: uppercase;
-    }
-
-    .inv-meta strong {
-      display: block;
-      font-family: var(--serif-en-display);
-      font-style: italic;
-      letter-spacing: 0;
-      text-transform: none;
-      font-size: 1.1rem;
-      color: var(--ink);
-      margin-top: .3rem;
-    }
-
-    .enter-site-btn {
-      margin-top: 2.4rem;
-      display: inline-block;
-      padding: .85rem 2.4rem;
-      border: 1px solid var(--gold);
-      border-radius: 999px;
-      font-family: var(--sans-util);
-      font-size: .7rem;
-      letter-spacing: .24em;
-      text-transform: uppercase;
-      color: var(--gold);
-      opacity: 0;
-      transform: translateY(10px);
-      transition: background .4s var(--ease-lux), color .4s var(--ease-lux);
-      min-height: 48px;
-      background: transparent;
-      cursor: pointer;
-    }
-
-    .enter-site-btn:hover {
-      background: var(--gold);
-      color: var(--paper);
-    }
-
-    @media (max-width: 480px) {
-      .invitation-card {
-        width: 94vw;
-        padding: 2.2rem 1.2rem;
-      }
-      .invitation-card::before {
-        inset: 8px;
-      }
-      .enter-site-btn {
-        padding: .8rem 1.9rem;
-        font-size: .66rem;
-      }
-    }
-
-    /* ============================================================
        MAIN SITE
        ============================================================ */
     #site {
@@ -952,6 +789,34 @@
       margin-inline: auto;
     }
 
+    /* Music toggle button */
+    #music-toggle {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9998;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(43, 38, 32, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--gold-dim);
+      color: var(--gold-light);
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .4s var(--ease-lux);
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    #music-toggle:hover {
+      transform: scale(1.08);
+      background: var(--gold);
+      color: var(--ink);
+    }
+
     /* ----- Ambient dust ----- */
     #ambient-dust {
       position: fixed;
@@ -980,6 +845,13 @@
       .cd-sep {
         font-size: 1.5rem;
       }
+      #music-toggle {
+        bottom: 16px;
+        right: 16px;
+        width: 44px;
+        height: 44px;
+        font-size: 1rem;
+      }
     }
 
     @media (min-width: 1600px) {
@@ -998,37 +870,30 @@
 <div class="cursor-dot"></div>
 <div class="cursor-ring"></div>
 
+<!-- ============ MUSIC PLAYER ============ -->
+<audio id="bg-music" loop preload="auto">
+  <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
+  <!-- Fallback: if the above fails, try an alternative -->
+  <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_11f0b6a2c8.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Music Toggle Button -->
+<button id="music-toggle" aria-label="Toggle music">
+  ♪
+</button>
+
 <!-- ============ VIDEO INTRO (Fullscreen) ============ -->
 <div id="video-intro">
   <video autoplay muted playsinline loop preload="auto" id="introVideo">
     <source src="https://player.vimeo.com/external/398890054.sd.mp4?s=d2b1d7cbfec272da257e85b62d5cf0904b7663e7&profile_id=164&oauth2_token_id=57447761" type="video/mp4">
-    <!-- Fallback video if the above fails -->
     <source src="WhatsApp Video 2026-07-23 at 2.14.24 AM.mp4" type="video/mp4">
   </video>
   <div class="overlay"></div>
   <div class="video-text">
     <div class="logo">مصطفى &amp; منه</div>
     <div class="sub">Save the Date</div>
-    <button class="enter-btn" id="enterFromVideo">Open Invitation</button>
-  </div>
-</div>
-
-<!-- ============ INVITATION CARD ============ -->
-<div id="invitation-stage">
-  <div class="invitation-card">
-    <div class="inv-line inv-honorific">يتشرف السيد <strong>يحيى مصطفى </strong><br>بدعوة سيادتكم لحضور حفل زفاف نجله</div>
-    <div class="inv-line inv-divider"></div>
-    <div class="inv-line inv-names">مصطفى
-      <span class="en">Mustafa</span>
-    </div>
-    <div class="inv-line inv-honorific">على كريمة السيد <strong>هشام محمد بنداري </strong></div>
-    <div class="inv-line inv-names">منه
-      <span class="en">&amp; Menna</span>
-    </div>
-    <div class="inv-line inv-divider"></div>
-    <div class="inv-line inv-honorific">تشريفكم يسعدنا ويزيدنا شرفًا</div>
-    <div class="inv-line inv-meta">23-8-2026<strong>قاعه لو بلاس جاردن </strong></div>
-    <a href="#hero" class="enter-site-btn" id="enterSiteBtn">Enter</a>
+    <!-- We hide the button but keep it for transition purposes -->
+    <button class="enter-btn" id="enterFromVideo" style="display:none;">Open Invitation</button>
   </div>
 </div>
 
@@ -1196,114 +1061,98 @@
   }
 
   /* ============================================================
-     2. VIDEO INTRO SEQUENCE
+     2. MUSIC CONTROLLER
      ============================================================ */
-  // Show logo and button after video starts
-  const video = document.getElementById('introVideo');
-  const videoIntro = document.getElementById('video-intro');
+  const music = document.getElementById('bg-music');
+  const musicToggle = document.getElementById('music-toggle');
+  let musicStarted = false;
 
-  // Wait for video to start playing then show elements
-  video.addEventListener('playing', function() {
-    gsap.to('.video-text .logo', {
-      opacity: 1,
-      duration: 1.8,
-      ease: 'power2.out'
-    });
-    gsap.to('.video-text .sub', {
-      opacity: 1,
-      duration: 1.2,
-      ease: 'power2.out',
-      delay: 0.4
-    });
-    gsap.to('.video-text .enter-btn', {
-      opacity: 1,
-      duration: 1.2,
-      ease: 'power2.out',
-      delay: 0.8
-    });
+  // Try to start music on any user interaction
+  function startMusic() {
+    if (!musicStarted) {
+      music.play().catch(() => {});
+      musicStarted = true;
+      musicToggle.textContent = '♫';
+    }
+  }
+
+  // Toggle music on button click
+  musicToggle.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (music.paused) {
+      music.play().catch(() => {});
+      this.textContent = '♫';
+    } else {
+      music.pause();
+      this.textContent = '♪';
+    }
   });
 
-  // If video fails to load, show after 3 seconds anyway
-  setTimeout(() => {
-    if (videoIntro.style.display !== 'none') {
-      gsap.to('.video-text .logo', {
-        opacity: 1,
-        duration: 1.2,
-        ease: 'power2.out'
-      });
-      gsap.to('.video-text .sub', {
-        opacity: 1,
-        duration: 1,
-        ease: 'power2.out',
-        delay: 0.3
-      });
-      gsap.to('.video-text .enter-btn', {
-        opacity: 1,
-        duration: 1,
-        ease: 'power2.out',
-        delay: 0.6
-      });
-    }
-  }, 3000);
+  // Auto-start music when user interacts with the page (after video transition)
+  document.addEventListener('click', startMusic, { once: true });
+  document.addEventListener('touchstart', startMusic, { once: true });
 
   /* ============================================================
-     3. ENTER FROM VIDEO → INVITATION CARD
+     3. VIDEO INTRO → AUTO TRANSITION TO SITE
      ============================================================ */
-  document.getElementById('enterFromVideo').addEventListener('click', function() {
-    const btn = this;
-    btn.style.pointerEvents = 'none';
+  const video = document.getElementById('introVideo');
+  const videoIntro = document.getElementById('video-intro');
+  const site = document.getElementById('site');
+
+  function transitionToSite() {
+    // Start music if not already started
+    startMusic();
 
     const tl = gsap.timeline({
       defaults: { ease: 'power3.inOut' },
       onComplete() {
         videoIntro.style.display = 'none';
-        // Pause video to save resources
         video.pause();
-      }
-    });
-
-    tl.to(btn, { opacity: 0, duration: .4 })
-      .to('.video-text .logo', { opacity: 0, duration: .6, y: -20 }, '-=0.2')
-      .to('.video-text .sub', { opacity: 0, duration: .6, y: -20 }, '-=0.4')
-      .to(videoIntro, { opacity: 0, duration: 1.2 }, '-=0.4')
-      .set('#invitation-stage', { pointerEvents: 'auto' })
-      .to('#invitation-stage', { opacity: 1, duration: 1.4, ease: 'power3.out' }, '-=0.4')
-      .to('.invitation-card', {
-        duration: 1.6,
-        ease: 'power3.out',
-        keyframes: [
-          { scale: 0.9, y: 30 },
-          { scale: 1, y: 0 }
-        ]
-      }, '<')
-      .to('.inv-line', {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: 'power3.out',
-        stagger: 0.18
-      }, '-=1')
-      .to('.enter-site-btn', { opacity: 1, y: 0, duration: 1 }, '-=0.3');
-  });
-
-  /* ============================================================
-     4. ENTER SITE FROM INVITATION
-     ============================================================ */
-  document.getElementById('enterSiteBtn').addEventListener('click', function(e) {
-    e.preventDefault();
-    const tl = gsap.timeline({
-      onComplete() {
-        document.getElementById('invitation-stage').style.display = 'none';
-        document.getElementById('site').style.visibility = 'visible';
+        site.style.visibility = 'visible';
         initSiteAnimations();
       }
     });
-    tl.to('.invitation-card', { opacity: 0, y: -30, duration: 1, ease: 'power2.in' })
-      .to('#invitation-stage', { opacity: 0, duration: 1 }, '-=0.4');
+
+    tl.to('.video-text .logo', { opacity: 0, duration: .6, y: -20 })
+      .to('.video-text .sub', { opacity: 0, duration: .6, y: -20 }, '-=0.3')
+      .to(videoIntro, { opacity: 0, duration: 1.2 }, '-=0.3')
+      .set(videoIntro, { pointerEvents: 'none' });
+  }
+
+  // Auto-transition after video has played for a few seconds
+  // Either when video starts playing, or after a timeout
+  let transitionTimer = setTimeout(transitionToSite, 6000);
+
+  video.addEventListener('playing', function() {
+    // If video starts playing, we still wait 2.5 seconds then transition
+    clearTimeout(transitionTimer);
+    transitionTimer = setTimeout(transitionToSite, 2500);
   });
 
+  // If video ends, transition immediately
+  video.addEventListener('ended', function() {
+    clearTimeout(transitionTimer);
+    transitionToSite();
+  });
+
+  // Also allow manual click on the video overlay to skip
+  videoIntro.addEventListener('click', function(e) {
+    // Don't trigger if clicking the button (but button is hidden)
+    if (e.target.closest('.enter-btn')) return;
+    clearTimeout(transitionTimer);
+    transitionToSite();
+  });
+
+  // Fallback: if video fails to load, transition after 4 seconds
+  setTimeout(() => {
+    if (videoIntro.style.display !== 'none' && video.paused) {
+      clearTimeout(transitionTimer);
+      transitionToSite();
+    }
+  }, 4000);
+
   /* ============================================================
-     5. POPULATE CONTENT
+     4. POPULATE CONTENT
      ============================================================ */
   (function populateContent() {
     const tlList = document.getElementById('timelineList');
@@ -1342,7 +1191,7 @@
   });
 
   /* ============================================================
-     6. COUNTDOWN
+     5. COUNTDOWN
      ============================================================ */
   function tickCountdown() {
     const target = new Date(weddingData.weddingDateISO).getTime();
@@ -1370,7 +1219,7 @@
   });
 
   /* ============================================================
-     7. SCROLL ANIMATIONS
+     6. SCROLL ANIMATIONS
      ============================================================ */
   let siteAnimationsInitialized = false;
 
@@ -1407,11 +1256,10 @@
     setTimeout(() => ScrollTrigger.refresh(), 500);
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
-    if (document.getElementById('site').style.visibility === 'visible') {
-      initSiteAnimations();
-    }
-  });
+  // If site is already visible (rare case), init animations
+  if (site.style.visibility === 'visible') {
+    initSiteAnimations();
+  }
 
   let resizeTimer;
   window.addEventListener('resize', function() {
@@ -1421,7 +1269,7 @@
     }, 250);
   });
 
-  console.log('دعوة زفاف مصطفى ومنه - فيديو + بطاقة دعوة');
+  console.log('دعوة زفاف مصطفى ومنه - فيديو + موسيقى تلقائية');
 </script>
 </body>
 </html>
