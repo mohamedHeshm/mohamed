@@ -1,0 +1,24 @@
+@media (max-width: 900px){
+  .details-grid{ grid-template-columns:repeat(2,1fr); }
+  .masonry{ columns:2 160px; }
+  .timeline-item{ width:80%; }
+}
+
+@media (max-width: 640px){
+  body{ cursor:auto; }
+  .cursor-dot,.cursor-ring{ display:none; }
+  .reveal-section{ padding:90px 6vw; }
+  .details-grid{ grid-template-columns:1fr; }
+  .flip-clock{ gap:10px; }
+  .flip-unit{ min-width:64px; padding:14px 10px; }
+  .music-player{ bottom:16px; left:16px; padding:8px 12px; }
+  .timeline-item{ width:100%; }
+  .timeline-line::before{ left:20px; }
+  .timeline-item.from-right, .timeline-item.from-left{ align-self:flex-start; margin-left:44px; width:calc(100% - 44px); }
+  .map-frame{ height:280px; }
+  .envelope{ width:88vw; height:64vw; }
+}
+
+@media (max-width: 380px){
+  .main-title{ font-size:38px !important; }
+}
