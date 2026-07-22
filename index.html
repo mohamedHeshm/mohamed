@@ -40,9 +40,13 @@
       --ease-lux: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    *{ margin:0; padding:0; box-sizing:border-box; }
-    html{ scroll-behavior:smooth; background:var(--ivory); }
+    *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html{ scroll-behavior:smooth; background:var(--ivory); width:100%; overflow-x:hidden; }
     ::selection{ background:var(--gold-dim); color:var(--ink); }
+
+    @media (prefers-reduced-motion: reduce){
+      *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
+    }
 
     body{
       background:var(--ivory);
@@ -237,11 +241,13 @@
       border:1px solid var(--gold);
       opacity:.5; pointer-events:none;
     }
-    .invitation-card::after{ /* fold lines */
-      content:""; position:absolute; left:33.33%; top:0; bottom:0; width:1px;
-      background:linear-gradient(to bottom, transparent, var(--gold-dim) 20%, var(--gold-dim) 80%, transparent);
-      box-shadow: 33.33vw 0 0 var(--gold-dim);
-      opacity:.5;
+    .invitation-card::after{ /* fold lines, purely relative to the card so nothing can overflow the viewport */
+      content:"";
+      position:absolute; top:0; bottom:0; left:0; right:0;
+      background:
+        linear-gradient(to bottom, transparent, var(--gold-dim) 20%, var(--gold-dim) 80%, transparent) 33.33% 0/1px 100% no-repeat,
+        linear-gradient(to bottom, transparent, var(--gold-dim) 20%, var(--gold-dim) 80%, transparent) 66.66% 0/1px 100% no-repeat;
+      opacity:.5; pointer-events:none;
     }
     .inv-line{ opacity:0; transform:translateY(16px); }
     .inv-honorific{
@@ -464,6 +470,26 @@
 
     /* ambient gold dust across whole site */
     #ambient-dust{ position:fixed; inset:0; z-index:2; pointer-events:none; opacity:.5; }
+
+    /* ============================================================
+       5. SMALL-SCREEN TUNING (phones)
+       ============================================================ */
+    @media (max-width: 480px){
+      .envelope-wrap{ width:min(62vw, 260px); }
+      .seal{ width:44px; height:44px; }
+      .seal span{ font-size:.9rem; }
+      .opening-inner{ padding:0 1.2rem; }
+      .invitation-card{ width:94vw; padding:2.2rem 1.2rem; }
+      .invitation-card::before{ inset:8px; }
+      .open-btn, .enter-site-btn{ padding:.8rem 1.9rem; font-size:.66rem; }
+      .masonry{ columns:2 140px; }
+    }
+
+    /* larger desktop / widescreen ceiling so nothing over-stretches on big monitors */
+    @media (min-width: 1600px){
+      .section-inner{ max-width:1200px; }
+      .loc-grid{ max-width:1200px; margin-inline:auto; }
+    }
   </style>
 </head>
 <body>
@@ -717,8 +743,11 @@
     }
     animate();
   }
-  createDust(document.getElementById('dust-canvas'), {count:260});
-  createDust(document.getElementById('ambient-dust'), {count:140});
+  const isSmallScreen = window.innerWidth < 640;
+  const isCoarsePointer = window.matchMedia('(pointer:coarse)').matches;
+  const dustScale = (isSmallScreen || isCoarsePointer) ? 0.45 : 1;
+  createDust(document.getElementById('dust-canvas'), {count: Math.round(260*dustScale)});
+  createDust(document.getElementById('ambient-dust'), {count: Math.round(140*dustScale)});
 
   /* ============================================================
      3. OPENING TIMELINE
