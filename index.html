@@ -1,255 +1,862 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>يتشرف بدعوتكم — دعوة زفاف</title>
-<meta name="description" content="دعوة زفاف رقمية سينمائية فاخرة" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>محمد &amp; سارة — دعوة زفاف</title>
 
-<!-- Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Amiri:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-<!-- Splitting.js CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/splitting/1.0.6/splitting.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/splitting/1.0.6/splitting-cells.min.css">
+  <style>
+    /* ============================================================
+       0. DESIGN TOKENS
+       ============================================================ */
+    :root{
+      --paper:        #FDFBF6;
+      --ivory:        #F6F1E7;
+      --beige:        #EAE0C9;
+      --gold:         #C6A15B;
+      --gold-light:   #E7CE97;
+      --gold-dim:     rgba(198,161,91,0.35);
+      --ink:          #2B2620;
+      --ink-soft:     #6B6154;
+      --wax:          #7C2A2A;
 
-<!-- Project styles -->
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="animations.css">
-<link rel="stylesheet" href="responsive.css">
+      --serif-ar-display: 'Aref Ruqaa', serif;
+      --serif-ar-body:    'Noto Naskh Arabic', serif;
+      --serif-en-display: 'Playfair Display', serif;
+      --serif-en-script:  'Cormorant Garamond', serif;
+      --sans-util:        'Inter', sans-serif;
+
+      --ease-lux: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    html{ scroll-behavior:smooth; background:var(--ivory); }
+    ::selection{ background:var(--gold-dim); color:var(--ink); }
+
+    body{
+      background:var(--ivory);
+      color:var(--ink);
+      font-family:var(--serif-ar-body);
+      overflow-x:hidden;
+      cursor:none;
+    }
+    img{ max-width:100%; display:block; }
+    button{ font-family:inherit; border:none; background:none; cursor:none; }
+    a{ color:inherit; text-decoration:none; cursor:none; }
+
+    /* subtle paper grain overlay for the whole page */
+    body::before{
+      content:"";
+      position:fixed; inset:0;
+      pointer-events:none;
+      z-index:9990;
+      opacity:0.035;
+      mix-blend-mode:multiply;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ============================================================
+       1. CUSTOM CURSOR
+       ============================================================ */
+    .cursor-dot, .cursor-ring{
+      position:fixed; top:0; left:0; pointer-events:none; z-index:10000;
+      transform:translate(-50%,-50%);
+      border-radius:50%;
+    }
+    .cursor-dot{ width:5px; height:5px; background:var(--gold); }
+    .cursor-ring{
+      width:32px; height:32px;
+      border:1px solid var(--gold);
+      transition:width .25s var(--ease-lux), height .25s var(--ease-lux), opacity .25s;
+      opacity:.65;
+    }
+    .cursor-ring.magnetic{ width:56px; height:56px; opacity:1; background:rgba(198,161,91,0.08); }
+    @media (hover:none), (pointer:coarse){
+      .cursor-dot,.cursor-ring{ display:none; }
+      body,button,a{ cursor:auto; }
+    }
+
+    /* ============================================================
+       2. PRELOADER / OPENING SCENE
+       ============================================================ */
+    #opening{
+      position:fixed; inset:0; z-index:9000;
+      background:#080706;
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden;
+    }
+    #dust-canvas{ position:absolute; inset:0; z-index:1; }
+
+    .opening-inner{
+      position:relative; z-index:2;
+      display:flex; flex-direction:column; align-items:center;
+      text-align:center;
+    }
+
+    .logo-mark{
+      font-family:var(--serif-ar-display);
+      font-size:clamp(2.2rem, 5vw, 3.6rem);
+      color:var(--gold-light);
+      letter-spacing:.04em;
+      opacity:0;
+    }
+    .logo-sub{
+      margin-top:.6rem;
+      font-family:var(--sans-util);
+      font-weight:300;
+      letter-spacing:.35em;
+      font-size:.7rem;
+      color:var(--gold-dim);
+      text-transform:uppercase;
+      opacity:0;
+    }
+
+    /* envelope */
+    .envelope-wrap{
+      position:relative;
+      width:min(40vw, 380px);
+      aspect-ratio:3/2;
+      opacity:0;
+      transform:translateY(24px) scale(.94);
+    }
+    .envelope{
+      position:relative; width:100%; height:100%;
+      perspective:1400px;
+    }
+    .env-body{
+      position:absolute; inset:0;
+      background:
+        linear-gradient(155deg, rgba(255,255,255,.08), rgba(0,0,0,.06) 60%),
+        var(--ivory);
+      border-radius:6px;
+      box-shadow:
+        0 30px 60px -15px rgba(0,0,0,.55),
+        0 2px 0 rgba(255,255,255,.4) inset;
+      border:1px solid var(--gold-dim);
+      overflow:hidden;
+    }
+    .env-body::before{ /* paper grain */
+      content:""; position:absolute; inset:0; opacity:.5; mix-blend-mode:multiply;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    .env-border{
+      position:absolute; inset:10px;
+      border:1px solid var(--gold);
+      border-radius:2px;
+      opacity:.55;
+    }
+    .env-border::after{
+      content:""; position:absolute; inset:6px;
+      border:1px solid var(--gold);
+      opacity:.4;
+    }
+    .env-flap{
+      position:absolute; top:0; left:0; width:100%; height:62%;
+      clip-path:polygon(0 0, 100% 0, 50% 100%);
+      background:
+        linear-gradient(200deg, rgba(255,255,255,.15), rgba(0,0,0,.08) 70%),
+        var(--beige);
+      transform-origin:top center;
+      border-bottom:1px solid var(--gold-dim);
+      z-index:3;
+    }
+    .env-flap::before{
+      content:""; position:absolute; inset:0;
+      border:1px solid var(--gold);
+      opacity:.5;
+      clip-path:polygon(2% 4%, 98% 4%, 50% 94%);
+    }
+    .seal{
+      position:absolute; top:52%; left:50%;
+      width:56px; height:56px;
+      transform:translate(-50%,-50%);
+      border-radius:50%;
+      background:radial-gradient(circle at 35% 30%, #9c4646, var(--wax) 60%, #501414 100%);
+      box-shadow:0 6px 14px rgba(0,0,0,.4), inset 0 2px 4px rgba(255,255,255,.25);
+      z-index:5;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .seal span{
+      font-family:var(--serif-en-display); font-style:italic;
+      color:rgba(255,236,210,.85); font-size:1.1rem;
+    }
+    .seal-crack{
+      position:absolute; inset:0; border-radius:50%;
+      opacity:0;
+    }
+
+    .open-btn{
+      margin-top:2.6rem;
+      padding:.9rem 2.6rem;
+      border:1px solid var(--gold);
+      border-radius:999px;
+      font-family:var(--sans-util);
+      font-size:.72rem;
+      letter-spacing:.28em;
+      text-transform:uppercase;
+      color:var(--gold-light);
+      opacity:0;
+      transition:background .4s var(--ease-lux), color .4s var(--ease-lux);
+    }
+    .open-btn:hover{ background:var(--gold); color:#1a1611; }
+
+    /* ============================================================
+       3. INVITATION CARD (revealed after opening)
+       ============================================================ */
+    #invitation-stage{
+      position:fixed; inset:0; z-index:8000;
+      display:flex; align-items:center; justify-content:center;
+      background:#080706;
+      opacity:0; pointer-events:none;
+    }
+    .invitation-card{
+      position:relative;
+      width:min(90vw, 640px);
+      padding:clamp(2.4rem,6vw,4.5rem) clamp(1.6rem,5vw,3.2rem);
+      background:
+        linear-gradient(160deg, rgba(255,255,255,.5), rgba(0,0,0,.02) 50%),
+        var(--paper);
+      border-radius:4px;
+      box-shadow:0 60px 120px -30px rgba(0,0,0,.6);
+      text-align:center;
+      transform-style:preserve-3d;
+    }
+    .invitation-card::before{
+      content:""; position:absolute; inset:14px;
+      border:1px solid var(--gold);
+      opacity:.5; pointer-events:none;
+    }
+    .invitation-card::after{ /* fold lines */
+      content:""; position:absolute; left:33.33%; top:0; bottom:0; width:1px;
+      background:linear-gradient(to bottom, transparent, var(--gold-dim) 20%, var(--gold-dim) 80%, transparent);
+      box-shadow: 33.33vw 0 0 var(--gold-dim);
+      opacity:.5;
+    }
+    .inv-line{ opacity:0; transform:translateY(16px); }
+    .inv-honorific{
+      font-family:var(--serif-ar-body);
+      font-size:clamp(.95rem,2vw,1.15rem);
+      color:var(--ink-soft);
+      line-height:2.1;
+    }
+    .inv-divider{
+      width:56px; height:1px; background:var(--gold); margin:1.4rem auto;
+      position:relative;
+    }
+    .inv-divider::before{
+      content:"❦"; position:absolute; top:50%; left:50%;
+      transform:translate(-50%,-50%); background:var(--paper);
+      padding:0 .6rem; color:var(--gold); font-size:.9rem;
+    }
+    .inv-names{
+      font-family:var(--serif-ar-display);
+      font-size:clamp(1.8rem,5vw,3rem);
+      color:var(--ink);
+      line-height:1.5;
+      margin:.6rem 0;
+    }
+    .inv-names .en{
+      display:block; font-family:var(--serif-en-script); font-style:italic;
+      font-size:clamp(1rem,2.4vw,1.3rem); color:var(--gold);
+      letter-spacing:.06em; margin-top:.4rem; direction:ltr;
+    }
+    .inv-meta{
+      margin-top:1.6rem;
+      font-family:var(--sans-util); font-size:.78rem; letter-spacing:.14em;
+      color:var(--ink-soft); text-transform:uppercase;
+    }
+    .inv-meta strong{ display:block; font-family:var(--serif-en-display); font-style:italic; letter-spacing:0; text-transform:none; font-size:1.1rem; color:var(--ink); margin-top:.3rem; }
+
+    .enter-site-btn{
+      margin-top:2.4rem;
+      display:inline-block;
+      padding:.85rem 2.4rem;
+      border:1px solid var(--gold);
+      border-radius:999px;
+      font-family:var(--sans-util); font-size:.7rem; letter-spacing:.24em; text-transform:uppercase;
+      color:var(--gold);
+      opacity:0; transform:translateY(10px);
+      transition:background .4s var(--ease-lux), color .4s var(--ease-lux);
+    }
+    .enter-site-btn:hover{ background:var(--gold); color:var(--paper); }
+
+    /* ============================================================
+       4. MAIN SITE
+       ============================================================ */
+    #site{ position:relative; z-index:1; visibility:hidden; }
+    .section{ position:relative; padding:clamp(5rem,12vw,9rem) clamp(1.4rem,6vw,4rem); }
+    .section-inner{ max-width:1080px; margin:0 auto; }
+    .eyebrow{
+      font-family:var(--sans-util); font-size:.72rem; letter-spacing:.32em;
+      text-transform:uppercase; color:var(--gold); text-align:center; margin-bottom:1rem;
+    }
+    .section-title{
+      font-family:var(--serif-ar-display); text-align:center;
+      font-size:clamp(1.9rem,4.2vw,3rem); color:var(--ink); margin-bottom:.6rem;
+    }
+    .section-title .en{
+      display:block; font-family:var(--serif-en-script); font-style:italic; direction:ltr;
+      font-size:clamp(1rem,2vw,1.3rem); color:var(--ink-soft); margin-top:.5rem;
+    }
+    .reveal{ opacity:0; transform:translateY(40px) scale(.98); }
+
+    /* ---- HERO ---- */
+    #hero{
+      height:100vh; padding:0;
+      display:flex; align-items:flex-end;
+      overflow:hidden;
+    }
+    .hero-bg{
+      position:absolute; inset:0; z-index:0;
+      background:
+        linear-gradient(180deg, rgba(20,16,10,.15), rgba(10,8,5,.65) 90%),
+        url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat;
+      transform:scale(1.12);
+      will-change:transform;
+    }
+    .hero-content{
+      position:relative; z-index:1; width:100%;
+      padding:0 clamp(1.4rem,6vw,4rem) clamp(3rem,8vw,5rem);
+      text-align:center; color:var(--paper);
+    }
+    .hero-content .en{
+      font-family:var(--serif-en-script); font-style:italic; direction:ltr;
+      font-size:clamp(1rem,2.4vw,1.4rem); letter-spacing:.05em; color:var(--gold-light); margin-bottom:.6rem;
+    }
+    .hero-content h1{
+      font-family:var(--serif-ar-display);
+      font-size:clamp(2.4rem,7vw,4.6rem);
+      line-height:1.3;
+    }
+    .hero-content .sub{
+      margin-top:1rem; font-family:var(--sans-util); font-weight:300;
+      font-size:.85rem; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.75);
+    }
+    .scroll-cue{
+      position:absolute; bottom:2.2rem; left:50%; transform:translateX(-50%);
+      z-index:1; color:var(--paper); opacity:.7;
+      font-family:var(--sans-util); font-size:.65rem; letter-spacing:.3em; text-transform:uppercase;
+      display:flex; flex-direction:column; align-items:center; gap:.5rem;
+    }
+    .scroll-cue::after{
+      content:""; width:1px; height:34px; background:linear-gradient(to bottom, var(--gold-light), transparent);
+      animation:scrollcue 2.2s ease-in-out infinite;
+    }
+    @keyframes scrollcue{ 0%{transform:scaleY(0); transform-origin:top;} 50%{transform:scaleY(1); transform-origin:top;} 51%{transform-origin:bottom;} 100%{transform:scaleY(0); transform-origin:bottom;} }
+
+    /* ---- COUNTDOWN ---- */
+    #countdown{ background:var(--paper); text-align:center; }
+    .countdown-grid{
+      display:flex; justify-content:center; gap:clamp(1.2rem,4vw,3.4rem); margin-top:2.4rem; flex-wrap:wrap;
+    }
+    .cd-unit{ min-width:80px; }
+    .cd-num{
+      font-family:var(--serif-en-display); font-weight:400;
+      font-size:clamp(2.4rem,6vw,4rem); color:var(--ink); line-height:1;
+    }
+    .cd-label{
+      margin-top:.6rem; font-family:var(--sans-util); font-size:.65rem; letter-spacing:.2em;
+      text-transform:uppercase; color:var(--ink-soft);
+    }
+    .cd-sep{ font-family:var(--serif-en-display); font-size:2rem; color:var(--gold-dim); align-self:flex-start; margin-top:.3rem; }
+
+    /* ---- TIMELINE ---- */
+    #timeline{ background:var(--ivory); }
+    .timeline-list{ position:relative; margin-top:3.4rem; }
+    .timeline-list::before{
+      content:""; position:absolute; top:0; bottom:0; right:50%;
+      width:1px; background:linear-gradient(to bottom, transparent, var(--gold) 8%, var(--gold) 92%, transparent);
+    }
+    .timeline-item{
+      position:relative; width:calc(50% - 2.4rem); margin-bottom:2.6rem;
+      padding:1.8rem 2rem; background:var(--paper); border:1px solid var(--gold-dim);
+      border-radius:14px; box-shadow:0 20px 40px -25px rgba(43,38,32,.25);
+      transition:transform .5s var(--ease-lux), box-shadow .5s var(--ease-lux);
+    }
+    .timeline-item:hover{ transform:translateY(-4px); box-shadow:0 26px 50px -20px rgba(43,38,32,.3); }
+    .timeline-item:nth-child(odd){ margin-right:calc(50% + 2.4rem); }
+    .timeline-item:nth-child(even){ margin-left:calc(50% + 2.4rem); }
+    .timeline-item::after{
+      content:""; position:absolute; top:2rem; width:9px; height:9px; border-radius:50%;
+      background:var(--gold); box-shadow:0 0 0 5px var(--ivory), 0 0 0 6px var(--gold-dim);
+    }
+    .timeline-item:nth-child(odd)::after{ left:calc(100% + 2.4rem - 4.5px); }
+    .timeline-item:nth-child(even)::after{ right:calc(100% + 2.4rem - 4.5px); }
+    .tl-time{ font-family:var(--sans-util); font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); }
+    .tl-title{ font-family:var(--serif-ar-display); font-size:1.35rem; margin-top:.5rem; }
+    .tl-title .en{ display:block; font-family:var(--serif-en-script); font-style:italic; direction:ltr; font-size:.85rem; color:var(--ink-soft); margin-top:.2rem; }
+    @media (max-width: 760px){
+      .timeline-list::before{ right:20px; }
+      .timeline-item, .timeline-item:nth-child(odd), .timeline-item:nth-child(even){ width:calc(100% - 56px); margin-right:0; margin-left:56px; }
+      .timeline-item::after, .timeline-item:nth-child(odd)::after, .timeline-item:nth-child(even)::after{ left:-36px; right:auto; }
+    }
+
+    /* ---- LOCATION ---- */
+    #location{ background:var(--paper); }
+    .loc-grid{ display:grid; grid-template-columns:1.1fr .9fr; gap:clamp(1.6rem,4vw,3rem); align-items:center; margin-top:2.6rem; }
+    .loc-image{ border-radius:18px; overflow:hidden; box-shadow:0 30px 60px -25px rgba(43,38,32,.35); aspect-ratio:4/5; }
+    .loc-image img{ width:100%; height:100%; object-fit:cover; }
+    .loc-text p{ font-family:var(--serif-ar-body); line-height:2; color:var(--ink-soft); margin-bottom:1.6rem; }
+    .loc-btn{
+      display:inline-block; padding:.85rem 2.2rem; border:1px solid var(--gold); border-radius:999px;
+      font-family:var(--sans-util); font-size:.7rem; letter-spacing:.2em; text-transform:uppercase; color:var(--gold);
+      transition:background .35s, color .35s;
+    }
+    .loc-btn:hover{ background:var(--gold); color:var(--paper); }
+    .map-embed{ margin-top:2.6rem; border-radius:18px; overflow:hidden; filter:grayscale(.25) sepia(.15) contrast(1.02); }
+    .map-embed iframe{ width:100%; height:340px; border:0; display:block; }
+    @media (max-width:760px){ .loc-grid{ grid-template-columns:1fr; } }
+
+    /* ---- GALLERY ---- */
+    #gallery{ background:var(--ivory); }
+    .masonry{ columns:3 220px; column-gap:1rem; margin-top:2.6rem; }
+    .masonry img{
+      width:100%; margin-bottom:1rem; border-radius:10px; break-inside:avoid;
+      cursor:none; transition:transform .6s var(--ease-lux), filter .6s;
+      filter:saturate(.92);
+    }
+    .masonry img:hover{ transform:translateY(-4px); filter:saturate(1.05); }
+    #lightbox{
+      position:fixed; inset:0; z-index:9500; background:rgba(8,7,6,.92);
+      display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none;
+    }
+    #lightbox img{ max-width:86vw; max-height:86vh; border-radius:6px; box-shadow:0 40px 100px rgba(0,0,0,.6); }
+    #lightbox-close{
+      position:absolute; top:2rem; left:2rem; color:var(--gold-light); font-family:var(--sans-util);
+      font-size:.75rem; letter-spacing:.2em; text-transform:uppercase;
+    }
+
+    /* ---- DETAILS CARDS ---- */
+    #details{ background:var(--paper); }
+    .details-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.6rem; margin-top:2.8rem; }
+    .detail-card{
+      padding:2.4rem 1.8rem; background:var(--ivory); border:1px solid var(--gold-dim); border-radius:16px;
+      text-align:center; box-shadow:0 20px 40px -28px rgba(43,38,32,.25);
+    }
+    .detail-card .icon{
+      width:38px; height:38px; margin:0 auto 1.2rem; border:1px solid var(--gold); border-radius:50%;
+      display:flex; align-items:center; justify-content:center; color:var(--gold); font-size:1.1rem;
+    }
+    .detail-card h3{
+      font-family:var(--sans-util); font-size:.75rem; letter-spacing:.18em; text-transform:uppercase; color:var(--ink); margin-bottom:.8rem;
+    }
+    .detail-card p{ font-family:var(--serif-ar-body); color:var(--ink-soft); line-height:1.9; font-size:.95rem; }
+    @media (max-width:760px){ .details-grid{ grid-template-columns:1fr; } }
+
+    /* ---- CLOSING ---- */
+    #closing{
+      background:var(--ink); color:var(--paper); text-align:center; padding-top:6rem; padding-bottom:6rem;
+    }
+    #closing .mark{ font-family:var(--serif-ar-display); font-size:clamp(1.6rem,4vw,2.4rem); color:var(--gold-light); }
+    #closing .en{ font-family:var(--serif-en-script); font-style:italic; color:rgba(255,255,255,.5); margin-top:.6rem; }
+    #closing .thanks{ margin-top:2rem; font-family:var(--serif-ar-body); color:rgba(255,255,255,.65); line-height:2; max-width:520px; margin-inline:auto; }
+
+    /* ambient gold dust across whole site */
+    #ambient-dust{ position:fixed; inset:0; z-index:2; pointer-events:none; opacity:.5; }
+  </style>
 </head>
 <body>
 
-<!-- ============ CURSOR ============ -->
-<div class="cursor-dot" aria-hidden="true"></div>
-<div class="cursor-ring" aria-hidden="true"></div>
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
 
-<!-- ============ PRELOADER / CINEMATIC INTRO ============ -->
-<section id="preloader" aria-label="مقدمة سينمائية">
-  <canvas id="intro-canvas"></canvas>
-  <div class="preloader-content">
-    <div class="crest" id="crest">
-      <svg viewBox="0 0 200 200" class="crest-svg">
-        <circle cx="100" cy="100" r="70" class="crest-ring" />
-        <circle cx="100" cy="100" r="58" class="crest-ring crest-ring--inner" />
-        <text x="100" y="112" text-anchor="middle" class="crest-glyph">منه+مصطفى</text>
-      </svg>
-    </div>
-    <p class="preloader-label" data-splitting>تُفتح البوابات الذهبية</p>
-    <div class="preloader-bar"><span id="preloader-fill"></span></div>
-  </div>
-  <button id="sound-permission" class="sound-permission">
-    <i class="fa-solid fa-volume-high"></i>
-    <span>ابدأ</span>
-  </button>
-</section>
+<!-- ============ OPENING ============ -->
+<div id="opening">
+  <canvas id="dust-canvas"></canvas>
+  <div class="opening-inner">
+    <div class="logo-mark">م &amp; س</div>
+    <div class="logo-sub">Save the Date</div>
 
-<!-- ============ THREE.JS BACKGROUND (persists) ============ -->
-<canvas id="bg-canvas"></canvas>
-<canvas id="petals-canvas"></canvas>
-
-<!-- ============ ENVELOPE HERO ============ -->
-<section id="envelope-hero">
-  <div class="scene3d">
-    <div class="envelope" id="envelope">
-      <div class="env-shadow"></div>
-      <div class="env-back"></div>
-      <div class="env-letter" id="env-letter">
-        <div class="fold fold-1">
-          <div class="paper-texture"></div>
+    <div class="envelope-wrap">
+      <div class="envelope">
+        <div class="env-body">
+          <div class="env-border"></div>
+          <div class="seal"><span>M&amp;S</span></div>
         </div>
-        <div class="fold fold-2">
-          <div class="paper-texture"></div>
-        </div>
-        <div class="fold fold-3">
-          <div class="paper-texture"></div>
-
-          <div class="invite-copy">
-            <p class="eyebrow" data-splitting>يتشرف السيد</p>
-            <p class="parent-name" id="groom-father-name" data-splitting>يحيى  </p>
-            <p class="eyebrow" data-splitting>بدعوة سيادتكم لتشريف حفل زفاف نجله</p>
-            <div class="heart-divider"><i class="fa-solid fa-heart"></i></div>
-            <p class="eyebrow" data-splitting>على كريمة السيد</p>
-            <p class="parent-name" id="bride-father-name" data-splitting>هشام محمد بنداري  </p>
-            <p class="closing-line" data-splitting>تشريفكم يسعدنا ويزيدنا شرفًا</p>
-          </div>
-        </div>
-      </div>
-      <div class="env-front-left"></div>
-      <div class="env-front-right"></div>
-      <div class="env-flap" id="env-flap">
-        <div class="seal" id="seal">
-          <div class="seal-crack seal-crack-1"></div>
-          <div class="seal-crack seal-crack-2"></div>
-          <div class="seal-crack seal-crack-3"></div>
-          <span class="seal-glyph">منه+مصطفى</span>
-        </div>
+        <div class="env-flap"></div>
       </div>
     </div>
+
+    <button class="open-btn" id="openBtn">Open Invitation</button>
   </div>
-
-  <button class="open-btn magnetic" id="open-btn">
-    <span>افتحوا الدعوة</span>
-    <i class="fa-solid fa-envelope-open-text"></i>
-  </button>
-
-  <div class="scroll-hint" id="scroll-hint">
-    <span>مرروا للأسفل</span>
-    <i class="fa-solid fa-chevron-down"></i>
-  </div>
-</section>
-
-<!-- ============ MAIN TITLE REVEAL ============ -->
-<section id="title-reveal" class="reveal-section">
-  <h1 class="main-title" data-splitting="chars">يتشرف بدعوتكم</h1>
-  <div class="couple-names">
-    <span class="name bride" id="bride-name" data-splitting>منه</span>
-    <i class="fa-solid fa-heart pulse"></i>
-    <span class="name groom" id="groom-name" data-splitting>مصطفى</span>
-  </div>
-  <p class="tagline" data-splitting>حكايتنا تبدأ من هنا، وندعوكم لنكون جزءًا من فصلها الأجمل</p>
-</section>
-
-<!-- ============ DETAILS ============ -->
-<section id="details" class="reveal-section glass-section">
-  <h2 class="section-title" data-splitting>تفاصيل الحفل</h2>
-  <div class="details-grid">
-    <div class="detail-card tilt">
-      <i class="fa-solid fa-calendar-days"></i>
-      <h3>التاريخ</h3>
-      <p>23\8\2026 </p>
-    </div>
-    <div class="detail-card tilt">
-      <i class="fa-solid fa-clock"></i>
-      <h3>الوقت</h3>
-      <p>الثامنة مساءً</p>
-    </div>
-    <div class="detail-card tilt">
-      <i class="fa-solid fa-location-dot"></i>
-      <h3>المكان</h3>
-      <p id="venue-name">قاعة لوبلاس جاردن</p>
-    </div>
-    <div class="detail-card tilt">
-      <i class="fa-solid fa-shirt"></i>
-      <h3>الحضور</h3>
-      <p>أزياء رسمية — لمسة ذهبية</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============ COUNTDOWN ============ -->
-<section id="countdown" class="reveal-section">
-  <h2 class="section-title" data-splitting>العد التنازلي</h2>
-  <div class="flip-clock" id="flip-clock" data-target="2026-11-12T20:00:00">
-    <div class="flip-unit"><div class="flip-value" id="cd-days">00</div><span>يوم</span></div>
-    <div class="flip-unit"><div class="flip-value" id="cd-hours">00</div><span>ساعة</span></div>
-    <div class="flip-unit"><div class="flip-value" id="cd-minutes">00</div><span>دقيقة</span></div>
-    <div class="flip-unit"><div class="flip-value" id="cd-seconds">00</div><span>ثانية</span></div>
-  </div>
-</section>
-
-<!-- ============ TIMELINE ============ -->
-<section id="timeline" class="reveal-section">
-  <h2 class="section-title" data-splitting>برنامج الحفل</h2>
-  <div class="timeline-line">
-    <div class="timeline-item from-right">
-      <i class="fa-solid fa-door-open"></i>
-      <h4>استقبال الضيوف</h4>
-      <p>٨:٠٠ مساءً</p>
-    </div>
-    <div class="timeline-item from-left">
-      <i class="fa-solid fa-rings-wedding"></i>
-      <h4>استقبال العروسين</h4>
-      <p>٨:٣٠ مساءً</p>
-    </div>
-
-    <div class="timeline-item from-left">
-      <i class="fa-solid fa-champagne-glasses"></i>
-      <h4>الزفة والاحتفال</h4>
-      <p>9:00 </p>
-    </div>
-  </div>
-</section>
-
-<!-- ============ GALLERY ============ -->
-<section id="gallery" class="reveal-section">
-  <h2 class="section-title" data-splitting>لقطات من حكايتنا</h2>
-  <div class="masonry" id="masonry"></div>
-</section>
-
-<!-- ============ MAP ============ -->
-<section id="location" class="reveal-section glass-section">
-  <h2 class="section-title" data-splitting>الموقع</h2>
-  <div class="map-frame">
-    <iframe
-      src="https://www.google.com/maps?q=Riyadh&output=embed"
-      loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade"
-      title="خريطة موقع الحفل">
-    </iframe>
-  </div>
-</section>
-
-<!-- ============ THANK YOU ============ -->
-<section id="thank-you" class="reveal-section">
-  <div class="crest small-crest">
-    <svg viewBox="0 0 200 200" class="crest-svg">
-      <circle cx="100" cy="100" r="70" class="crest-ring" />
-      <text x="100" y="112" text-anchor="middle" class="crest-glyph">م ♥ م</text>
-    </svg>
-  </div>
-  <h2 class="section-title" data-splitting>شكرًا لكم</h2>
-  <p class="tagline" data-splitting>حضوركم أسمى تكريم لنا، وننتظر مشاركتكم أجمل لحظات حياتنا</p>
-  <p class="signature" id="signature-line">منه &amp; مصطفى</p>
-</section>
-
-<!-- ============ MUSIC PLAYER ============ -->
-<div class="music-player" id="music-player">
-  <button id="music-toggle" aria-label="تشغيل/إيقاف الموسيقى">
-    <i class="fa-solid fa-music"></i>
-  </button>
-  <input type="range" id="music-volume" min="0" max="1" step="0.01" value="0.4" aria-label="مستوى الصوت">
-  <audio id="bg-audio" loop preload="none">
-    <!-- Place your ambient piano track at assets/music/ambient.mp3 -->
-    <source src="assets/music/ambient.mp3" type="audio/mpeg">
-  </audio>
 </div>
 
-<!-- ============ LIGHTBOX ============ -->
-<div class="lightbox" id="lightbox">
-  <button class="lightbox-close" id="lightbox-close"><i class="fa-solid fa-xmark"></i></button>
-  <img src="" alt="" id="lightbox-img">
+<!-- ============ INVITATION CARD ============ -->
+<div id="invitation-stage">
+  <div class="invitation-card">
+    <div class="inv-line inv-honorific">يتشرف السيد <strong>أحمد الفلاني</strong><br>بدعوة سيادتكم لحضور حفل زفاف نجله</div>
+    <div class="inv-line inv-divider"></div>
+    <div class="inv-line inv-names">محمد
+      <span class="en">Mohammed</span>
+    </div>
+    <div class="inv-line inv-honorific">على كريمة السيد <strong>خالد العتيبي</strong></div>
+    <div class="inv-line inv-names">سارة
+      <span class="en">&amp; Sarah</span>
+    </div>
+    <div class="inv-line inv-divider"></div>
+    <div class="inv-line inv-honorific">تشريفكم يسعدنا ويزيدنا شرفًا</div>
+    <div class="inv-line inv-meta">18 ديسمبر 2026<strong>فندق ريتز كارلتون، الرياض</strong></div>
+    <a href="#hero" class="enter-site-btn" id="enterSiteBtn">Enter</a>
+  </div>
 </div>
 
-<!-- ============ Libraries ============ -->
-<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/splitting/1.0.6/splitting.min.js"></script>
+<!-- ============ MAIN SITE ============ -->
+<div id="site">
+  <canvas id="ambient-dust"></canvas>
 
-<!-- ============ Project scripts ============ -->
-<script src="particles.js"></script>
-<script src="three-scene.js"></script>
-<script src="cursor.js"></script>
-<script src="scroll.js"></script>
-<link rel="stylesheet"
-      href="https://unpkg.com/splitting/dist/splitting.css">
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="en reveal">Mohammed &amp; Sarah</div>
+      <h1 class="reveal">محمد وسارة</h1>
+      <div class="sub reveal">18 · 12 · 2026 — الرياض</div>
+    </div>
+    <div class="scroll-cue">Scroll</div>
+  </section>
 
-<link rel="stylesheet"
-      href="https://unpkg.com/splitting/dist/splitting-cells.css">
+  <section id="countdown" class="section">
+    <div class="section-inner">
+      <div class="eyebrow reveal">Countdown</div>
+      <h2 class="section-title reveal">العد التنازلي<span class="en">Until we say “I do”</span></h2>
+      <div class="countdown-grid reveal">
+        <div class="cd-unit"><div class="cd-num" id="cd-days">00</div><div class="cd-label">Days</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><div class="cd-num" id="cd-hours">00</div><div class="cd-label">Hours</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><div class="cd-num" id="cd-mins">00</div><div class="cd-label">Minutes</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><div class="cd-num" id="cd-secs">00</div><div class="cd-label">Seconds</div></div>
+      </div>
+    </div>
+  </section>
 
-<script src="https://unpkg.com/splitting/dist/splitting.min.js"></script>
-<script src="animations.js"></script>
-<script src="countdown.js"></script>
-<script src="gallery.js"></script>
-<script src="music.js"></script>
-<script src="main.js"></script>
+  <section id="timeline" class="section">
+    <div class="section-inner">
+      <div class="eyebrow reveal">Order of the Day</div>
+      <h2 class="section-title reveal">برنامج الحفل<span class="en">A day, unfolding</span></h2>
+      <div class="timeline-list" id="timelineList"></div>
+    </div>
+  </section>
 
+  <section id="location" class="section">
+    <div class="section-inner">
+      <div class="eyebrow reveal">Venue</div>
+      <h2 class="section-title reveal">المكان<span class="en">Where we begin</span></h2>
+      <div class="loc-grid">
+        <div class="loc-image reveal">
+          <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200&auto=format&fit=crop" alt="Venue">
+        </div>
+        <div class="loc-text reveal">
+          <p>يسرنا استقبالكم في قاعة الاحتفالات بفندق ريتز كارلتون الرياض، حيث تتناغم الفخامة الكلاسيكية مع لمسة معاصرة، في أمسية نحتفل فيها معًا ببداية جديدة.</p>
+          <a class="loc-btn" href="https://www.google.com/maps" target="_blank" rel="noopener">Get Directions</a>
+        </div>
+      </div>
+      <div class="map-embed reveal">
+        <iframe src="https://www.google.com/maps?q=Ritz%20Carlton%20Riyadh&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery" class="section">
+    <div class="section-inner">
+      <div class="eyebrow reveal">Gallery</div>
+      <h2 class="section-title reveal">لقطات<span class="en">Moments we cherish</span></h2>
+      <div class="masonry" id="masonryGrid"></div>
+    </div>
+  </section>
+
+  <section id="details" class="section">
+    <div class="section-inner">
+      <div class="eyebrow reveal">Good to Know</div>
+      <h2 class="section-title reveal">تفاصيل الحفل<span class="en">A few notes</span></h2>
+      <div class="details-grid">
+        <div class="detail-card reveal">
+          <div class="icon">🌙</div>
+          <h3>Dress Code</h3>
+          <p>يُفضّل الحضور بإطلالة رسمية بألوان دافئة تتناغم مع أجواء الحفل.</p>
+        </div>
+        <div class="detail-card reveal">
+          <div class="icon">✦</div>
+          <h3>RSVP</h3>
+          <p>نرجو تأكيد الحضور قبل تاريخ 1 ديسمبر 2026 عبر التواصل المباشر.</p>
+        </div>
+        <div class="detail-card reveal">
+          <div class="icon">✿</div>
+          <h3>Gifts</h3>
+          <p>حضوركم هو أجمل هدية نعتز بها في هذه الليلة الاستثنائية.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="closing" class="section">
+    <div class="section-inner">
+      <div class="mark reveal">محمد &amp; سارة</div>
+      <div class="en reveal">Mohammed &amp; Sarah</div>
+      <p class="thanks reveal">بقلوب مفعمة بالسعادة، ننتظر أن نشارككم أجمل لحظات حياتنا. شكرًا لكونكم جزءًا من قصتنا.</p>
+    </div>
+  </section>
+</div>
+
+<div id="lightbox">
+  <div id="lightbox-close">Close ✕</div>
+  <img src="" alt="">
+</div>
+
+<script>
+  /* ============================================================
+     EDITABLE WEDDING DATA — change everything here
+     ============================================================ */
+  const weddingData = {
+    groomName: "محمد",
+    groomNameEn: "Mohammed",
+    groomFather: "أحمد الفلاني",
+    brideName: "سارة",
+    brideNameEn: "Sarah",
+    brideFather: "خالد العتيبي",
+    weddingDateISO: "2026-12-18T18:00:00",
+    weddingDateDisplay: "18 ديسمبر 2026",
+    venue: "فندق ريتز كارلتون، الرياض",
+    timeline: [
+      { time: "6:00 PM", ar: "استقبال الضيوف", en: "Guest Arrival" },
+      { time: "7:00 PM", ar: "حفل العقد", en: "Ceremony" },
+      { time: "8:00 PM", ar: "جلسة التصوير", en: "Photo Session" },
+      { time: "9:00 PM", ar: "حفل العشاء", en: "Dinner Reception" },
+      { time: "10:30 PM", ar: "الرقصة الأولى", en: "First Dance" },
+      { time: "11:30 PM", ar: "قطع الكيكة", en: "Cake Cutting" }
+    ],
+    gallery: [
+      "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=900&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=900&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1594736797933-d0c6a37a4e69?q=80&w=900&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?q=80&w=900&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1521543387287-8fa08f1a0b09?q=80&w=900&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1509927083803-4bd519298ac4?q=80&w=900&auto=format&fit=crop"
+    ]
+  };
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ============================================================
+     1. CUSTOM CURSOR
+     ============================================================ */
+  const dot = document.querySelector('.cursor-dot');
+  const ring = document.querySelector('.cursor-ring');
+  let mx=0,my=0, rx=0, ry=0;
+  window.addEventListener('mousemove', e=>{
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx+'px'; dot.style.top = my+'px';
+  });
+  gsap.ticker.add(()=>{
+    rx += (mx-rx)*0.15; ry += (my-ry)*0.15;
+    ring.style.left = rx+'px'; ring.style.top = ry+'px';
+  });
+  document.querySelectorAll('button, a').forEach(el=>{
+    el.addEventListener('mouseenter', ()=> ring.classList.add('magnetic'));
+    el.addEventListener('mouseleave', ()=> ring.classList.remove('magnetic'));
+  });
+
+  /* ============================================================
+     2. THREE.JS GOLD DUST (used for both opening + ambient)
+     ============================================================ */
+  function createDust(canvas, opts={}){
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(55, window.innerWidth/window.innerHeight, 0.1, 100);
+    camera.position.z = 12;
+
+    const count = opts.count || 220;
+    const positions = new Float32Array(count*3);
+    for(let i=0;i<count;i++){
+      positions[i*3] = (Math.random()-0.5)*20;
+      positions[i*3+1] = (Math.random()-0.5)*12;
+      positions[i*3+2] = (Math.random()-0.5)*10;
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions,3));
+    const mat = new THREE.PointsMaterial({
+      color:0xC6A15B, size:0.045, transparent:true, opacity:0.75, depthWrite:false
+    });
+    const points = new THREE.Points(geo, mat);
+    scene.add(points);
+
+    let targetX=0, targetY=0;
+    window.addEventListener('mousemove', e=>{
+      targetX = (e.clientX/window.innerWidth - 0.5) * 0.6;
+      targetY = (e.clientY/window.innerHeight - 0.5) * 0.6;
+    });
+
+    function resize(){
+      renderer.setSize(canvas.clientWidth || window.innerWidth, canvas.clientHeight || window.innerHeight);
+      camera.aspect = (canvas.clientWidth||window.innerWidth)/(canvas.clientHeight||window.innerHeight);
+      camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function animate(){
+      points.rotation.y += 0.0006;
+      camera.position.x += (targetX - camera.position.x)*0.02;
+      camera.position.y += (-targetY - camera.position.y)*0.02;
+      camera.lookAt(scene.position);
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }
+  createDust(document.getElementById('dust-canvas'), {count:260});
+  createDust(document.getElementById('ambient-dust'), {count:140});
+
+  /* ============================================================
+     3. OPENING TIMELINE
+     ============================================================ */
+  const openTl = gsap.timeline();
+  openTl
+    .to('.logo-mark', {opacity:1, duration:1.4, ease:'power2.out'})
+    .to('.logo-mark', {opacity:0, duration:1, ease:'power2.in', delay:1.2})
+    .to('.logo-sub', {opacity:1, duration:1}, '<-1.2')
+    .to('.logo-sub', {opacity:0, duration:.8}, '<+0.4')
+    .to('.envelope-wrap', {opacity:1, y:0, scale:1, duration:1.8, ease:'power3.out'}, '-=0.4')
+    .to('.open-btn', {opacity:1, duration:1.2, ease:'power2.out'}, '-=0.8');
+
+  /* ============================================================
+     4. OPEN INVITATION SEQUENCE
+     ============================================================ */
+  document.getElementById('openBtn').addEventListener('click', ()=>{
+    const btn = document.getElementById('openBtn');
+    btn.style.pointerEvents = 'none';
+
+    const tl = gsap.timeline({
+      defaults:{ ease:'power3.inOut' },
+      onComplete(){
+        document.getElementById('opening').style.display='none';
+      }
+    });
+
+    tl.to(btn, {opacity:0, duration:.6})
+      // wax seal cracks
+      .to('.seal', {scale:1.15, duration:.35, ease:'power2.out'})
+      .to('.seal', {scale:0, opacity:0, duration:.5, ease:'back.in(1.7)'}, '-=0.1')
+      // flap opens
+      .to('.env-flap', {rotateX:180, duration:1.4, ease:'power3.inOut'}, '-=0.2')
+      // envelope + card lift, fade to invitation stage
+      .to('.envelope-wrap', {y:-40, opacity:0, duration:1, ease:'power2.in'}, '-=0.6')
+      .set('#invitation-stage', {pointerEvents:'auto'})
+      .to('#invitation-stage', {opacity:1, duration:1.2}, '-=0.4')
+      .to('.invitation-card', {
+          duration:1.6, ease:'power3.out',
+          keyframes:[
+            {scale:0.9, y:30},
+            {scale:1, y:0}
+          ]
+      }, '<')
+      .to('.inv-line', {
+          opacity:1, y:0, duration:1, ease:'power3.out', stagger:0.18
+      }, '-=1')
+      .to('.enter-site-btn', {opacity:1, y:0, duration:1}, '-=0.3');
+  });
+
+  document.getElementById('enterSiteBtn').addEventListener('click', (e)=>{
+    e.preventDefault();
+    const tl = gsap.timeline({
+      onComplete(){
+        document.getElementById('invitation-stage').style.display='none';
+        document.getElementById('site').style.visibility='visible';
+        initSiteAnimations();
+      }
+    });
+    tl.to('.invitation-card', {opacity:0, y:-30, duration:1, ease:'power2.in'})
+      .to('#invitation-stage', {opacity:0, duration:1}, '-=0.4');
+  });
+
+  /* ============================================================
+     5. SITE CONTENT INJECTION (timeline + gallery from data object)
+     ============================================================ */
+  (function populateContent(){
+    const tlList = document.getElementById('timelineList');
+    weddingData.timeline.forEach(item=>{
+      const el = document.createElement('div');
+      el.className = 'timeline-item reveal';
+      el.innerHTML = `<div class="tl-time">${item.time}</div>
+        <div class="tl-title">${item.ar}<span class="en">${item.en}</span></div>`;
+      tlList.appendChild(el);
+    });
+
+    const grid = document.getElementById('masonryGrid');
+    weddingData.gallery.forEach(src=>{
+      const img = document.createElement('img');
+      img.src = src; img.loading = 'lazy'; img.alt='Wedding gallery';
+      img.addEventListener('click', ()=> openLightbox(src));
+      grid.appendChild(img);
+    });
+  })();
+
+  function openLightbox(src){
+    const lb = document.getElementById('lightbox');
+    lb.querySelector('img').src = src;
+    gsap.to(lb, {opacity:1, duration:.5, pointerEvents:'auto'});
+  }
+  document.getElementById('lightbox-close').addEventListener('click', ()=>{
+    gsap.to('#lightbox', {opacity:0, duration:.4, pointerEvents:'none'});
+  });
+
+  /* ============================================================
+     6. COUNTDOWN
+     ============================================================ */
+  function tickCountdown(){
+    const target = new Date(weddingData.weddingDateISO).getTime();
+    const now = Date.now();
+    const diff = Math.max(target-now, 0);
+    const d = Math.floor(diff/86400000);
+    const h = Math.floor((diff/3600000)%24);
+    const m = Math.floor((diff/60000)%60);
+    const s = Math.floor((diff/1000)%60);
+    const pad = n=> String(n).padStart(2,'0');
+    document.getElementById('cd-days').textContent = pad(d);
+    document.getElementById('cd-hours').textContent = pad(h);
+    document.getElementById('cd-mins').textContent = pad(m);
+    document.getElementById('cd-secs').textContent = pad(s);
+  }
+  setInterval(tickCountdown, 1000);
+  tickCountdown();
+
+  /* ============================================================
+     7. SCROLL REVEALS + HERO PARALLAX (init once site is visible)
+     ============================================================ */
+  function initSiteAnimations(){
+    ScrollTrigger.refresh();
+
+    gsap.utils.toArray('.reveal').forEach(el=>{
+      gsap.to(el, {
+        opacity:1, y:0, scale:1, duration:1.1, ease:'power3.out',
+        scrollTrigger:{ trigger:el, start:'top 88%' }
+      });
+    });
+
+    gsap.to('.hero-bg', {
+      scale:1, yPercent:8, ease:'none',
+      scrollTrigger:{ trigger:'#hero', start:'top top', end:'bottom top', scrub:true }
+    });
+
+    document.querySelectorAll('.reveal').forEach(el=>{
+      if (getComputedStyle(el).opacity !== '0' && el.getBoundingClientRect().top < window.innerHeight){
+        gsap.set(el, {opacity:1, y:0, scale:1});
+      }
+    });
+  }
+</script>
 </body>
 </html>
