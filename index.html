@@ -157,255 +157,66 @@
       background: rgba(198, 161, 91, 0.08);
     }
 
-    /* ----- Paper texture overlay ----- */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 9990;
-      opacity: 0.025;
-      mix-blend-mode: multiply;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    }
-
     /* ============================================================
-       OPENING SCENE — GRAND DOOR
+       VIDEO INTRO (Fullscreen)
        ============================================================ */
-    #opening {
+    #video-intro {
       position: fixed;
       inset: 0;
-      z-index: 9000;
-      background: #080706;
+      z-index: 9999;
+      background: #000;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
     }
 
-    #dust-canvas {
+    #video-intro video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    #video-intro .overlay {
       position: absolute;
       inset: 0;
+      background: rgba(8, 7, 6, 0.3);
       z-index: 1;
-      opacity: 0.5;
     }
 
-    .opening-inner {
+    .video-text {
       position: relative;
       z-index: 2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       text-align: center;
+      color: var(--paper);
       padding: 1rem;
-      width: 100%;
-      max-width: 900px;
     }
 
-    .logo-mark {
+    .video-text .logo {
       font-family: var(--serif-ar-display);
-      font-size: clamp(2rem, 5vw, 3.6rem);
+      font-size: clamp(2.5rem, 6vw, 5rem);
       color: var(--gold-light);
       letter-spacing: .04em;
       opacity: 0;
-      margin-bottom: 1rem;
+      text-shadow: 0 0 60px rgba(198, 161, 91, 0.15);
     }
 
-    .logo-sub {
+    .video-text .sub {
       font-family: var(--sans-util);
       font-weight: 300;
       letter-spacing: .35em;
-      font-size: clamp(0.6rem, 1.2vw, 0.8rem);
+      font-size: clamp(0.7rem, 1.5vw, 0.9rem);
       color: var(--gold-dim);
       text-transform: uppercase;
       opacity: 0;
-      margin-bottom: 2rem;
+      margin-top: 0.5rem;
     }
 
-    /* ----- GRAND DOOR (full screen) ----- */
-    .door-wrap {
-      position: relative;
-      width: min(85vw, 700px);
-      max-width: 700px;
-      aspect-ratio: 4/3;
-      opacity: 0;
-      transform: translateY(30px) scale(0.95);
-      perspective: 1800px;
-    }
-
-    .door-container {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transform-style: preserve-3d;
-    }
-
-    .door-frame {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(160deg, #2a241e, #1a1612);
-      border-radius: 12px;
-      box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.8), inset 0 0 60px rgba(198, 161, 91, 0.05);
-      border: 2px solid rgba(198, 161, 91, 0.2);
-      overflow: hidden;
-    }
-
-    .door-frame::before {
-      content: "";
-      position: absolute;
-      inset: 12px;
-      border: 1px solid rgba(198, 161, 91, 0.15);
-      border-radius: 6px;
-      pointer-events: none;
-    }
-
-    /* Door panels (left & right) */
-    .door-panel {
-      position: absolute;
-      top: 0;
-      width: 50%;
-      height: 100%;
-      background: linear-gradient(170deg, #3d342c, #1e1915 60%, #2a231e);
-      transform-origin: center;
-      transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: transform;
-      backface-visibility: hidden;
-    }
-
-    .door-panel-left {
-      left: 0;
-      border-radius: 8px 0 0 8px;
-      transform-origin: left center;
-      border-right: 1px solid rgba(198, 161, 91, 0.08);
-    }
-
-    .door-panel-right {
-      right: 0;
-      border-radius: 0 8px 8px 0;
-      transform-origin: right center;
-      border-left: 1px solid rgba(198, 161, 91, 0.08);
-    }
-
-    /* Decorative door details */
-    .door-panel::before {
-      content: "";
-      position: absolute;
-      inset: 15%;
-      border: 1px solid rgba(198, 161, 91, 0.1);
-      border-radius: 4px;
-      opacity: 0.5;
-    }
-
-    .door-panel::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 30%;
-      height: 40%;
-      border: 1px solid rgba(198, 161, 91, 0.08);
-      border-radius: 4px;
-      opacity: 0.3;
-    }
-
-    /* Door handles (gold) */
-    .door-handle {
-      position: absolute;
-      top: 50%;
-      width: 12px;
-      height: 40px;
-      background: linear-gradient(180deg, #d4af7d, #b8925c);
-      border-radius: 6px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(255, 215, 140, 0.2);
-      transform: translateY(-50%);
-    }
-
-    .door-handle-left {
-      right: 18%;
-    }
-
-    .door-handle-right {
-      left: 18%;
-    }
-
-    /* Gold arch / top ornament */
-    .door-arch {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 70%;
-      height: 20%;
-      border-top: 2px solid rgba(198, 161, 91, 0.2);
-      border-radius: 100% 100% 0 0 / 200% 200% 0 0;
-      pointer-events: none;
-    }
-
-    .door-arch::before {
-      content: "✦";
-      position: absolute;
-      top: 10%;
-      left: 50%;
-      transform: translateX(-50%);
-      color: var(--gold-light);
-      font-size: clamp(1.2rem, 3vw, 2rem);
-      opacity: 0.4;
-    }
-
-    /* Door hinge decorations */
-    .door-hinge {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      border: 1px solid rgba(198, 161, 91, 0.15);
-      border-radius: 50%;
-      opacity: 0.3;
-    }
-
-    .door-hinge-tl {
-      top: 12%;
-      left: 8%;
-    }
-    .door-hinge-bl {
-      bottom: 12%;
-      left: 8%;
-    }
-    .door-hinge-tr {
-      top: 12%;
-      right: 8%;
-    }
-    .door-hinge-br {
-      bottom: 12%;
-      right: 8%;
-    }
-
-    /* Door open state */
-    .door-panel-left.open {
-      transform: rotateY(-110deg) translateX(-2%);
-    }
-
-    .door-panel-right.open {
-      transform: rotateY(110deg) translateX(2%);
-    }
-
-    /* Glow behind the door when opened */
-    .door-glow {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at center, rgba(198, 161, 91, 0.08), transparent 70%);
-      opacity: 0;
-      transition: opacity 1.5s ease;
-      pointer-events: none;
-    }
-
-    .door-glow.active {
-      opacity: 1;
-    }
-
-    /* ----- OPEN BUTTON ----- */
-    .open-btn {
-      margin-top: 2.6rem;
+    .video-text .enter-btn {
+      margin-top: 2.5rem;
       padding: clamp(0.8rem, 2vw, 1rem) clamp(2rem, 4vw, 3rem);
       border: 1px solid var(--gold);
       border-radius: 999px;
@@ -418,35 +229,27 @@
       transition: background .4s var(--ease-lux), color .4s var(--ease-lux);
       background: transparent;
       min-height: 48px;
+      cursor: pointer;
     }
 
-    .open-btn:hover {
+    .video-text .enter-btn:hover {
       background: var(--gold);
       color: #1a1611;
     }
 
     @media (max-width: 480px) {
-      .door-wrap {
-        width: 92vw;
+      .video-text .logo {
+        font-size: 2rem;
       }
-      .door-handle {
-        width: 8px;
-        height: 28px;
-      }
-      .door-handle-left {
-        right: 12%;
-      }
-      .door-handle-right {
-        left: 12%;
-      }
-      .open-btn {
+      .video-text .enter-btn {
         margin-top: 2rem;
         padding: 0.7rem 1.6rem;
+        font-size: 0.6rem;
       }
     }
 
     /* ============================================================
-       INVITATION CARD (after door opens)
+       INVITATION CARD (after video)
        ============================================================ */
     #invitation-stage {
       position: fixed;
@@ -455,9 +258,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(8, 7, 6, 0.7);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background: rgba(8, 7, 6, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       opacity: 0;
       pointer-events: none;
       padding: 1rem;
@@ -586,6 +389,7 @@
       transition: background .4s var(--ease-lux), color .4s var(--ease-lux);
       min-height: 48px;
       background: transparent;
+      cursor: pointer;
     }
 
     .enter-site-btn:hover {
@@ -950,6 +754,7 @@
       transition: background .35s, color .35s;
       min-height: 48px;
       background: transparent;
+      cursor: pointer;
     }
 
     .loc-btn:hover {
@@ -1193,33 +998,18 @@
 <div class="cursor-dot"></div>
 <div class="cursor-ring"></div>
 
-<!-- ============ OPENING — GRAND DOOR ============ -->
-<div id="opening">
-  <canvas id="dust-canvas"></canvas>
-  <div class="opening-inner">
-    <div class="logo-mark">عمر &amp; سارة</div>
-    <div class="logo-sub">Save the Date</div>
-
-    <div class="door-wrap">
-      <div class="door-container">
-        <div class="door-frame">
-          <div class="door-glow" id="doorGlow"></div>
-          <div class="door-arch"></div>
-          <div class="door-hinge door-hinge-tl"></div>
-          <div class="door-hinge door-hinge-bl"></div>
-          <div class="door-hinge door-hinge-tr"></div>
-          <div class="door-hinge door-hinge-br"></div>
-          <div class="door-panel door-panel-left" id="doorLeft">
-            <div class="door-handle door-handle-left"></div>
-          </div>
-          <div class="door-panel door-panel-right" id="doorRight">
-            <div class="door-handle door-handle-right"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <button class="open-btn" id="openBtn">Open Invitation</button>
+<!-- ============ VIDEO INTRO (Fullscreen) ============ -->
+<div id="video-intro">
+  <video autoplay muted playsinline loop preload="auto" id="introVideo">
+    <source src="https://player.vimeo.com/external/398890054.sd.mp4?s=d2b1d7cbfec272da257e85b62d5cf0904b7663e7&profile_id=164&oauth2_token_id=57447761" type="video/mp4">
+    <!-- Fallback video if the above fails -->
+    <source src="WhatsApp Video 2026-07-23 at 2.14.24 AM.mp4" type="video/mp4">
+  </video>
+  <div class="overlay"></div>
+  <div class="video-text">
+    <div class="logo">عمر &amp; سارة</div>
+    <div class="sub">Save the Date</div>
+    <button class="enter-btn" id="enterFromVideo">Open Invitation</button>
   </div>
 </div>
 
@@ -1408,128 +1198,78 @@
   }
 
   /* ============================================================
-     2. GOLD DUST PARTICLES (Three.js - lightweight)
+     2. VIDEO INTRO SEQUENCE
      ============================================================ */
-  function createDust(canvas, opts = {}) {
-    const isMobile = window.innerWidth < 640 || window.matchMedia('(pointer: coarse)').matches;
-    if (isMobile) {
-      canvas.style.display = 'none';
-      return;
-    }
+  // Show logo and button after video starts
+  const video = document.getElementById('introVideo');
+  const videoIntro = document.getElementById('video-intro');
 
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
-    script.onload = function() {
-      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
-      camera.position.z = 12;
+  // Wait for video to start playing then show elements
+  video.addEventListener('playing', function() {
+    gsap.to('.video-text .logo', {
+      opacity: 1,
+      duration: 1.8,
+      ease: 'power2.out'
+    });
+    gsap.to('.video-text .sub', {
+      opacity: 1,
+      duration: 1.2,
+      ease: 'power2.out',
+      delay: 0.4
+    });
+    gsap.to('.video-text .enter-btn', {
+      opacity: 1,
+      duration: 1.2,
+      ease: 'power2.out',
+      delay: 0.8
+    });
+  });
 
-      const count = opts.count || 120;
-      const positions = new Float32Array(count * 3);
-      for (let i = 0; i < count; i++) {
-        positions[i * 3] = (Math.random() - 0.5) * 20;
-        positions[i * 3 + 1] = (Math.random() - 0.5) * 12;
-        positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
-      }
-      const geo = new THREE.BufferGeometry();
-      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      const mat = new THREE.PointsMaterial({
-        color: 0xC6A15B,
-        size: 0.04,
-        transparent: true,
-        opacity: 0.6,
-        depthWrite: false
-      });
-      const points = new THREE.Points(geo, mat);
-      scene.add(points);
-
-      let targetX = 0,
-        targetY = 0;
-      window.addEventListener('mousemove', e => {
-        targetX = (e.clientX / window.innerWidth - 0.5) * 0.4;
-        targetY = (e.clientY / window.innerHeight - 0.5) * 0.4;
-      });
-
-      function resize() {
-        renderer.setSize(canvas.clientWidth || window.innerWidth, canvas.clientHeight || window.innerHeight);
-        camera.aspect = (canvas.clientWidth || window.innerWidth) / (canvas.clientHeight || window.innerHeight);
-        camera.updateProjectionMatrix();
-      }
-      window.addEventListener('resize', resize);
-      resize();
-
-      let frameId;
-
-      function animate() {
-        frameId = requestAnimationFrame(animate);
-        points.rotation.y += 0.0004;
-        camera.position.x += (targetX - camera.position.x) * 0.02;
-        camera.position.y += (-targetY - camera.position.y) * 0.02;
-        camera.lookAt(scene.position);
-        renderer.render(scene, camera);
-      }
-      animate();
-
-      window.addEventListener('beforeunload', () => {
-        if (frameId) cancelAnimationFrame(frameId);
-      });
-    };
-    document.head.appendChild(script);
-  }
-
+  // If video fails to load, show after 3 seconds anyway
   setTimeout(() => {
-    createDust(document.getElementById('dust-canvas'), { count: 150 });
-    createDust(document.getElementById('ambient-dust'), { count: 100 });
-  }, 500);
+    if (videoIntro.style.display !== 'none') {
+      gsap.to('.video-text .logo', {
+        opacity: 1,
+        duration: 1.2,
+        ease: 'power2.out'
+      });
+      gsap.to('.video-text .sub', {
+        opacity: 1,
+        duration: 1,
+        ease: 'power2.out',
+        delay: 0.3
+      });
+      gsap.to('.video-text .enter-btn', {
+        opacity: 1,
+        duration: 1,
+        ease: 'power2.out',
+        delay: 0.6
+      });
+    }
+  }, 3000);
 
   /* ============================================================
-     3. OPENING SEQUENCE (Logo + Door)
+     3. ENTER FROM VIDEO → INVITATION CARD
      ============================================================ */
-  const openTl = gsap.timeline();
-  openTl
-    .to('.logo-mark', { opacity: 1, duration: 1.4, ease: 'power2.out' })
-    .to('.logo-mark', { opacity: 0, duration: 1, ease: 'power2.in', delay: 1.2 })
-    .to('.logo-sub', { opacity: 1, duration: 1 }, '<-1.2')
-    .to('.logo-sub', { opacity: 0, duration: .8 }, '<+0.4')
-    .to('.door-wrap', { opacity: 1, y: 0, scale: 1, duration: 1.8, ease: 'power3.out' }, '-=0.4')
-    .to('.open-btn', { opacity: 1, duration: 1.2, ease: 'power2.out' }, '-=0.8');
-
-  /* ============================================================
-     4. OPEN DOOR SEQUENCE
-     ============================================================ */
-  document.getElementById('openBtn').addEventListener('click', function() {
+  document.getElementById('enterFromVideo').addEventListener('click', function() {
     const btn = this;
     btn.style.pointerEvents = 'none';
 
     const tl = gsap.timeline({
       defaults: { ease: 'power3.inOut' },
       onComplete() {
-        document.getElementById('opening').style.display = 'none';
+        videoIntro.style.display = 'none';
+        // Pause video to save resources
+        video.pause();
       }
     });
 
-    // Open the doors
     tl.to(btn, { opacity: 0, duration: .4 })
-      .to('.door-panel-left', {
-        duration: 1.6,
-        ease: 'power3.inOut',
-        onStart: () => {
-          document.getElementById('doorLeft').classList.add('open');
-          document.getElementById('doorRight').classList.add('open');
-          document.getElementById('doorGlow').classList.add('active');
-        }
-      })
-      .to('.door-panel-right', {
-        duration: 1.6,
-        ease: 'power3.inOut'
-      }, '<')
-      .to('.door-wrap', { scale: 1.02, duration: 0.8, ease: 'power2.out' }, '-=0.4')
-      .to('.door-wrap', { scale: 1, duration: 0.6, ease: 'power2.in' }, '-=0.2')
+      .to('.video-text .logo', { opacity: 0, duration: .6, y: -20 }, '-=0.2')
+      .to('.video-text .sub', { opacity: 0, duration: .6, y: -20 }, '-=0.4')
+      .to(videoIntro, { opacity: 0, duration: 1.2 }, '-=0.4')
       .set('#invitation-stage', { pointerEvents: 'auto' })
-      .to('#invitation-stage', { opacity: 1, duration: 1.2 }, '-=0.6')
+      .to('#invitation-stage', { opacity: 1, duration: 1.4, ease: 'power3.out' }, '-=0.4')
       .to('.invitation-card', {
         duration: 1.6,
         ease: 'power3.out',
@@ -1548,6 +1288,9 @@
       .to('.enter-site-btn', { opacity: 1, y: 0, duration: 1 }, '-=0.3');
   });
 
+  /* ============================================================
+     4. ENTER SITE FROM INVITATION
+     ============================================================ */
   document.getElementById('enterSiteBtn').addEventListener('click', function(e) {
     e.preventDefault();
     const tl = gsap.timeline({
@@ -1680,7 +1423,7 @@
     }, 250);
   });
 
-  console.log('دعوة زفاف عمر وسارة - بوابة القاعة');
+  console.log('دعوة زفاف عمر وسارة - فيديو + بطاقة دعوة');
 </script>
 </body>
 </html>
