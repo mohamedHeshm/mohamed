@@ -5,19 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>مصطفى &amp; منه — دعوة زفاف</title>
 
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
-  <!-- GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
   <style>
-    /* ============================================================
-       ROOT VARIABLES & RESET
-       ============================================================ */
     :root {
       --paper: #FDFBF6;
       --ivory: #F6F1E7;
@@ -90,7 +85,6 @@
       cursor: pointer;
     }
 
-    /* ----- CUSTOM CURSOR (Desktop only) ----- */
     @media (hover: hover) and (pointer: fine) {
       body {
         cursor: none;
@@ -157,9 +151,7 @@
       background: rgba(198, 161, 91, 0.08);
     }
 
-    /* ============================================================
-       VIDEO INTRO (Fullscreen)
-       ============================================================ */
+
     #video-intro {
       position: fixed;
       inset: 0;
@@ -248,9 +240,7 @@
       }
     }
 
-    /* ============================================================
-       MAIN SITE
-       ============================================================ */
+
     #site {
       position: relative;
       z-index: 1;
@@ -443,7 +433,7 @@
       margin-top: .3rem;
     }
 
-    /* ---- TIMELINE ---- */
+
     #timeline {
       background: var(--ivory);
     }
@@ -702,7 +692,7 @@
       }
     }
 
-    /* ---- DETAILS ---- */
+
     #details {
       background: var(--paper);
     }
@@ -758,7 +748,7 @@
       }
     }
 
-    /* ---- CLOSING ---- */
+
     #closing {
       background: var(--ink);
       color: var(--paper);
@@ -817,7 +807,7 @@
       color: var(--ink);
     }
 
-    /* ----- Ambient dust ----- */
+
     #ambient-dust {
       position: fixed;
       inset: 0;
@@ -870,17 +860,14 @@
 <div class="cursor-dot"></div>
 <div class="cursor-ring"></div>
 
-<!-- ============ MUSIC PLAYER ============ -->
 <audio autoplay id="bg-music" loop preload="auto">
   <source src="Perfect - Ed Sheeran song lyrics _lyrics _song _edsheeran _songlyrics _spotify _trending(MP3_160K).mp3.mpeg" type="audio/mpeg">
 </audio>
 
-<!-- Music Toggle Button -->
 <button id="music-toggle" aria-label="Toggle music">
   ♪
 </button>
 
-<!-- ============ VIDEO INTRO (Fullscreen) ============ -->
 <div id="video-intro">
   <video autoplay muted playsinline loop preload="auto" id="introVideo">
     <source src="https://player.vimeo.com/external/398890054.sd.mp4?s=d2b1d7cbfec272da257e85b62d5cf0904b7663e7&profile_id=164&oauth2_token_id=57447761" type="video/mp4">
@@ -895,7 +882,6 @@
   </div>
 </div>
 
-<!-- ============ MAIN SITE ============ -->
 <div id="site">
   <canvas id="ambient-dust"></canvas>
 
@@ -994,9 +980,7 @@
 </div>
 
 <script>
-  /* ============================================================
-     WEDDING DATA
-     ============================================================ */
+
   const weddingData = {
     groomName: "مصطفى",
     groomNameEn: "Mustafa",
@@ -1024,9 +1008,7 @@
 
   gsap.registerPlugin(ScrollTrigger);
 
-  /* ============================================================
-     1. CUSTOM CURSOR (Desktop only)
-     ============================================================ */
+
   if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
     const dot = document.querySelector('.cursor-dot');
     const ring = document.querySelector('.cursor-ring');
@@ -1052,9 +1034,6 @@
     });
   }
 
-  /* ============================================================
-     2. MUSIC CONTROLLER
-     ============================================================ */
   const music = document.getElementById('bg-music');
   const musicToggle = document.getElementById('music-toggle');
   let musicStarted = false;
@@ -1068,7 +1047,6 @@
     }
   }
 
-  // Toggle music on button click
   musicToggle.addEventListener('click', function(e) {
     e.stopPropagation();
     if (music.paused) {
@@ -1084,9 +1062,7 @@
   document.addEventListener('click', startMusic, { once: true });
   document.addEventListener('touchstart', startMusic, { once: true });
 
-  /* ============================================================
-     3. VIDEO INTRO → AUTO TRANSITION TO SITE
-     ============================================================ */
+
   const video = document.getElementById('introVideo');
   const videoIntro = document.getElementById('video-intro');
   const site = document.getElementById('site');
@@ -1153,9 +1129,7 @@ const fade = setInterval(() => {
     }
   }, 4000);
 
-  /* ============================================================
-     4. POPULATE CONTENT
-     ============================================================ */
+
   (function populateContent() {
     const tlList = document.getElementById('timelineList');
     weddingData.timeline.forEach(item => {
@@ -1192,9 +1166,7 @@ const fade = setInterval(() => {
     }
   });
 
-  /* ============================================================
-     5. COUNTDOWN
-     ============================================================ */
+
   function tickCountdown() {
     const target = new Date(weddingData.weddingDateISO).getTime();
     const now = Date.now();
@@ -1220,9 +1192,7 @@ const fade = setInterval(() => {
     }
   });
 
-  /* ============================================================
-     6. SCROLL ANIMATIONS
-     ============================================================ */
+
   let siteAnimationsInitialized = false;
 
   function initSiteAnimations() {
